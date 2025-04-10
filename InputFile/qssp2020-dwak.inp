@@ -1,0 +1,249 @@
+# This is the input file of FORTRAN77 program "qssp2020" for calculating
+# synthetic seismograms of a self-gravitating, spherically symmetric,
+# isotropic and viscoelastic earth.
+#
+# by
+# Rongjiang Wang <wang@gfz-potsdam.de>
+# Helmholtz-Centre Potsdam
+# GFZ German Reseach Centre for Geosciences
+# Telegrafenberg, D-14473 Potsdam, Germany
+#
+# Last modified: Potsdam, April 2020
+#
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# If not specified, SI Unit System is used overall!
+#
+# Coordinate systems:
+# spherical (r,t,p) with r = radial, t = co-latitude, and p = east longitude.
+# local cartesian (e,n,z) with e = east, n = north, and z = vertical (upwards positve).
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+#
+#   UNIFORM RECEIVER DEPTH
+#   ======================
+# 1. uniform receiver depth [km]
+#--------------------------------------------------------------------------------------------------------
+    0.00
+#--------------------------------------------------------------------------------------------------------
+#
+#   SPACE-TIME SAMPLING PARAMETERS
+#   ==============================
+# 1. time window [sec], sampling interval [sec]
+# 2. max. frequency [Hz] of Green's functions
+# 3. max. slowness [s/km] of Green's functions
+#    Note: if the near-field static displacement is desired, the maximum slowness should not
+#          be smaller than the S wave slowness in the receiver layer
+# 4. anti-aliasing factor (> 0 & < 1), if it is <= 0 or >= 1/e (~ 0.4), then default value of
+#    1/e is used (e.g., 0.1 = alias phases will be suppressed to 10% of their original
+#    amplitude)
+# 5. switch (1/0 = yes/no) of turning-point filter, the range (d1, d2) of max. penetration
+#    depth [km] (d1 is meaningless if it is smaller than the receiver/source depth, and
+#    d2 is meaningless if it is equal to or larger than the earth radius)
+#
+#    Note: The turning-point filter (Line 5) works only for the extended QSSP code (e.g.,
+#          qssp2016). if this filter is selected, all phases with the turning point
+#          shallower than d1 or deeper than d2 will be filtered.
+#
+# 6. Earth radius [km], switch of free-surface-reflection filter (1/0 = with/without free
+#    surface reflection)
+#
+#    Note: The free-surface-reflection filter (Line 6) works only for the extended QSSP
+#          code (e.g., qssp2016). if this filter is selected, all phases with the turning
+#          point shallower than d1 or deeper than d2 will be filtered.
+#--------------------------------------------------------------------------------------------------------
+	600.0   0.10
+    1.00
+    0.65
+    0.25
+	0   0.0   3389.5
+	3389.5    1
+#--------------------------------------------------------------------------------------------------------
+#
+#   SELF-GRAVITATING EFFECT
+#   =======================
+# 1. the critical frequency [Hz] and the critical harmonic degree, below which
+#    the self-gravitating effect should be included
+#--------------------------------------------------------------------------------------------------------
+    0.00     0
+#--------------------------------------------------------------------------------------------------------
+#
+#   WAVE TYPES
+#   ==========
+# 1. selection (1/0 = yes/no) of spheroidal modes (P-SV waves), selection of toroidal modes
+#    (SH waves), minimum and maximum cutoff harmonic degrees
+#    Note: if the near-field static displacement is desired, the minimum cutoff harmonic
+#          degree should not be smaller than, e.g., 2000.
+#--------------------------------------------------------------------------------------------------------
+    1     1    2500  25000
+#--------------------------------------------------------------------------------------------------------
+#   GREEN'S FUNCTION FILES
+#   ======================
+# 1. number of discrete source depths, estimated radius of each source patch [km] and
+#    directory for Green's functions
+# 2. list of the source depths [km], the respective file names of the Green's functions
+#    (spectra) and the switch number (0/1) (0 = do not calculate this Green's function because
+#    it exists already, 1 = calculate or update this Green's function).
+#    Note: Green's functions need to be recalculated if any of the above parameters is changed.
+#--------------------------------------------------------------------------------------------------------
+    1     0.0  './MarsGreenFunctions/'
+    20.0   'MarsGreen_20km'   1
+#--------------------------------------------------------------------------------------------------------
+#
+#   MULTI-EVENT SOURCE PARAMETERS
+#   =============================
+# 1. number of discrete point sources and selection of the source data format
+#    (1, 2 or 3)
+# 2. list of the multi-event sources
+#
+#    Format 1 (full moment tensor):
+#    Unit     Mrr  Mtt  Mpp  Mrt  Mrp  Mtp  Lat   Lon   Depth  T_origin T_rise
+#    [Nm]                                   [deg] [deg] [km]   [sec]    [sec]
+#
+#    Format 2 (double couple):
+#    Unit   Strike    Dip       Rake      Lat   Lon   Depth  T_origin T_rise
+#    [Nm]   [deg]     [deg]     [deg]     [deg] [deg] [km]   [sec]    [sec]
+#
+#    Format 3 (single force):
+#    Unit      Feast    Fnorth  Fvertical    Lat   Lon   Depth  T_origin T_rise
+#    [N]                                     [deg] [deg] [km]   [sec]    [sec]
+#
+#    Note: for each point source, the default moment (force) rate time function is used, defined by a
+#          squared half-period (T_rise) sinusoid starting at T_origin.
+#--------------------------------------------------------------------------------------------------------
+    1      2
+    1.0E+00  0.0  20.0  90.0  0.0  0.0  20.0  0.0   5.0
+#--------------------------------------------------------------------------------------------------------
+#
+#   RECEIVER PARAMETERS
+#   ===================
+# 1. select output observables (1/0 = yes/no)
+#    Note: "gravitation" here means (space-based) garvitational acceleration vector, while "gravity"
+#          means the gravity change (downwards positive) measured by a gravimeter. The latter includes
+#          the effect due to free-air gradient and ground acceleration.
+# 2. output file name
+# 3. output time window [sec] (<= Green's function time window)
+# 4. selection of order of Butterworth bandpass filter (if <= 0, then no filtering), lower
+#    and upper corner frequencies (<= cut-off frequency defined above)
+# 5. lower and upper slowness cut-off [s/km] (slowness band-pass filter)
+# 6. number of receiver
+# 7. list of the station parameters
+#    Format:
+#    Lat     Lon    Name     Time_reduction
+#    [deg]   [deg]           [sec]
+#    (Note: Time_reduction = start time of the time window)
+#--------------------------------------------------------------------------------------------------------------------
+# disp | velo | acce | strain | strain_rate | stress | stress_rate | rotation | rotation_rate |gravitation |  gravity
+#--------------------------------------------------------------------------------------------------------------------
+  1      0      0      0        0             0        0             0          0                0                0
+  './MarsSeis'
+  600.0
+  0   0.00   0.75
+  0.00   0.65
+  3
+  0.0    1.6904   'E0100'  0.0
+  0.0    8.4520   'E0500'  0.0
+  0.0   16.9039   'E1000'  0.0
+#--------------------------------------------------------------------------------------------------------
+#
+#   MULTI-LAYERED SEISMIC REFERENCE MODEL
+#   =====================================
+# 1. number of data lines of the layered model and selection for including
+#    the physical dispersion according to Kamamori & Anderson (1977)
+#--------------------------------------------------------------------------------------------------------
+    90     1      !AWAK.bm (https://zenodo.org/record/1478804#.XyvHlTVCQ2w)
+#--------------------------------------------------------------------------------------------------------
+#
+#   MODEL PARAMETERS
+#   ================
+# no   depth[km]    vp[km/s]    vs[km/s]  ro[g/cm^3]          qp          qs
+#--------------------------------------------------------------------------------------------------------
+   1       0.000       4.202       1.986       2.115      1502.1       500.0
+   2       1.000       4.202       1.986       2.115      1502.2       500.0
+   3       1.000       5.366       3.000       2.449      1121.4       500.0
+   4      10.000       5.366       2.999       2.449      1122.0       500.0
+   5      10.000       6.104       3.410       2.786      1123.0       500.0
+   6      75.653       6.104       3.402       2.786      1127.4       500.0
+   7      75.653       7.404       4.237       3.380       267.7       118.7
+   8      80.000       7.404       4.237       3.380       267.7       118.7
+   9      80.000       7.371       4.233       3.381       265.9       118.7
+  10     100.000       7.387       4.151       3.386       279.6       119.7
+  11     110.000       7.395       4.150       3.389       281.7       120.3
+  12     120.000       7.403       4.149       3.392       283.9       120.9
+  13     130.000       7.411       4.148       3.395       286.0       121.5
+  14     140.000       7.451       4.157       3.404       289.4       122.2
+  15     150.000       7.475       4.160       3.410       292.4       122.9
+  16     160.000       7.493       4.162       3.414       295.2       123.6
+  17     170.000       7.507       4.163       3.418       297.9       124.3
+  18     180.000       7.528       4.165       3.424       300.9       125.1
+  19     190.000       7.541       4.166       3.427       303.6       125.8
+  20     200.000       7.554       4.167       3.431       306.4       126.6
+  21     222.866       7.582       4.167       3.439       312.7       128.4
+  22     245.539       7.603       4.167       3.446       318.8       130.2
+  23     268.446       7.629       4.168       3.453       325.0       131.9
+  24     291.248       7.647       4.166       3.460       330.9       133.7
+  25     313.964       7.681       4.178       3.469       329.1       132.4
+  26     336.679       7.715       4.188       3.478       327.3       131.2
+  27     359.395       7.744       4.198       3.487       325.1       129.9
+  28     382.111       7.771       4.206       3.495       322.8       128.6
+  29     404.826       7.800       4.216       3.503       320.8       127.5
+  30     427.542       7.827       4.224       3.512       318.8       126.3
+  31     450.257       7.852       4.233       3.520       316.7       125.1
+  32     472.973       7.879       4.242       3.528       314.7       124.0
+  33     495.689       7.903       4.250       3.535       312.8       123.0
+  34     518.404       7.927       4.258       3.543       310.9       122.0
+  35     541.120       7.953       4.267       3.551       309.4       121.1
+  36     563.836       7.976       4.275       3.558       307.9       120.2
+  37     586.551       8.001       4.283       3.566       306.7       119.5
+  38     609.267       8.025       4.292       3.573       305.7       118.8
+  39     631.982       8.050       4.301       3.581       304.8       118.2
+  40     654.698       8.073       4.309       3.588       304.1       117.7
+  41     677.414       8.095       4.317       3.596       303.6       117.3
+  42     700.129       8.119       4.325       3.603       303.4       117.0
+  43     722.845       8.142       4.334       3.610       303.3       116.8
+  44     745.561       8.166       4.343       3.618       303.5       116.7
+  45     768.276       8.189       4.351       3.625       304.0       116.6
+  46     790.992       8.211       4.359       3.633       304.6       116.7
+  47     813.708       8.234       4.367       3.640       305.3       116.8
+  48     836.423       8.257       4.376       3.648       306.2       116.9
+  49     859.139       8.282       4.386       3.656       307.3       117.2
+  50     881.855       8.305       4.394       3.663       308.6       117.5
+  51     904.570       8.330       4.404       3.672       309.9       117.8
+  52     927.286       8.388       4.443       3.683       309.4       118.0
+  53     950.001       8.411       4.451       3.692       311.1       118.5
+  54     972.717       8.437       4.461       3.702       312.9       119.0
+  55     995.433       8.462       4.469       3.711       315.1       119.6
+  56    1018.148       8.488       4.477       3.722       317.6       120.2
+  57    1040.864       8.517       4.488       3.733       319.7       120.8
+  58    1063.580       8.671       4.579       3.777       317.7       120.6
+  59    1086.295       8.887       4.712       3.836       314.0       120.1
+  60    1109.011       9.019       4.793       3.871       313.1       120.2
+  61    1131.726       9.039       4.800       3.878       315.3       120.9
+  62    1154.442       9.059       4.808       3.885       317.7       121.7
+  63    1177.158       9.079       4.816       3.892       320.3       122.6
+  64    1199.873       9.097       4.823       3.899       323.1       123.5
+  65    1222.589       9.117       4.831       3.906       326.1       124.6
+  66    1245.305       9.135       4.838       3.913       329.3       125.7
+  67    1268.020       9.153       4.845       3.919       332.9       127.0
+  68    1290.736       9.196       4.866       3.930       334.9       127.7
+  69    1313.451       9.242       4.890       3.942       337.0       128.5
+  70    1336.167       9.307       4.927       3.958       338.7       129.3
+  71    1358.883       9.364       4.959       3.973       340.2       130.0
+  72    1381.598       9.417       4.989       3.988       341.6       130.6
+  73    1404.314       9.472       5.020       4.003       342.9       131.2
+  74    1427.030       9.495       5.032       4.010       347.1       132.8
+  75    1449.745       9.513       5.039       4.017       352.0       134.7
+  76    1472.461       9.529       5.047       4.023       357.2       136.6
+  77    1495.177       9.544       5.053       4.028       362.9       138.8
+  78    1517.892       9.561       5.061       4.034       369.0       141.1
+  79    1540.608       9.579       5.070       4.041       375.4       143.6
+  80    1563.323       9.594       5.077       4.046       382.4       146.3
+  81    1586.039       9.622       5.093       4.056       388.9       148.9
+  82    1608.755       9.650       5.111       4.067       395.4       151.6
+  83    1608.755       4.974       0.000       5.917     10000.0         0.0
+  84    1863.147       5.138       0.000       6.089     10000.0         0.0
+  85    2117.539       5.273       0.000       6.232     10000.0         0.0
+  86    2371.931       5.382       0.000       6.346     10000.0         0.0
+  87    2626.323       5.465       0.000       6.434     10000.0         0.0
+  88    2880.716       5.524       0.000       6.497     10000.0         0.0
+  89    3135.108       5.559       0.000       6.534     10000.0         0.0
+  90    3389.500       5.559       0.000       6.534     10000.0         0.0
+#---------------------------------end of all inputs------------------------------------------------------
