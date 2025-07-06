@@ -2,7 +2,7 @@ FORTRAN code for calculating complete synthetic seismograms of a spherical earth
 
 Highlights:
 
-(1) all-in-one code for body waves, surface waves, free oscillations, tsunami for uniform ocean, infrasound waves for a standard atmosphere and static deformation
+(1) all-in-one code for body waves, surface waves, free oscillations, tsunami (in a uniform ocean), infrasound waves for a standard atmosphere and static deformation
 
 (2) generating Green’s function database or simulating complete seismograms for any given kinematic source model
 
